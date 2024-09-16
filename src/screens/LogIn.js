@@ -3,11 +3,45 @@ import React, { useState } from 'react'
 import CustomInput from '../Common/CustomInput'
 import CustomButton from '../Common/CustomButton'
 import { useNavigation } from '@react-navigation/native'
+import firestore from '@react-native-firebase/firestore';
 
 const LogIn = () => {
   const navigation=useNavigation()
   const[email,setEmail]=useState("")
   const[password,setPassword]=useState("")
+
+  const saveDAata=()=>{
+    firestore()
+     .collection('Users')
+  // Filter results
+     .where('email', '==', email)
+     .get()
+     .then(querySnapshot => {
+      if(querySnapshot.docs.length > 0){
+        console.log(querySnapshot.docs[0]._data.email+ 
+          " " + querySnapshot.docs[0]._data.password)
+      }
+      else{
+        console.log("No user found")
+      }
+      
+  }).catch(error=>{
+    console.log(error)
+  });
+  // firestore()
+  // .collection('Users')
+  // .add({
+  //   email: email,
+  //   password: password,
+  // })
+  // .then(() => {
+  //   console.log('User added!');
+  // });
+
+
+
+  }
+
   return (
     <View style={{flex:1}}>
       <Text style={styles.Text}>FZone</Text>
@@ -32,7 +66,7 @@ const LogIn = () => {
       bgColor="dodgerblue"
       title={"Log In"}
       txtcolor={"white"}
-      onPress={()=>{}}
+      onPress={()=>{saveDAata()}}
       
       />
 
