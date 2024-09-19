@@ -1,13 +1,47 @@
 import { Image, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomInput from '../Common/CustomInput'
-
+import CustomButton from '../Common/CustomButton'
+import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
+import { useNavigation } from '@react-navigation/native';
+let token =""
 const SignUp = () => {
+  const navigation=useNavigation()
     const[name,setName]=useState("")
     const[number,setNumber]=useState("")
     const[email,setEmail]=useState("")
     const[password,setPassword]=useState("")
     const[confirmPassword,setConfirmPassword]=useState("")
+  useEffect(()=>{
+    getEfCm()
+  },[])
+
+  const getEfCm=async()=>{
+    token=await messaging().getToken()
+    console.log(token)
+  }
+   
+
+
+    const saveDAata=()=>{
+       firestore()
+       .collection('Users')
+       .add({
+         name:name,
+         number:number,
+         email: email,
+         password: password,
+         confirmPassword:confirmPassword,
+         token:token
+
+         })
+    .then(() => {
+     console.log('User added!');
+     navigation.goBack()
+     
+  });
+    }
   return (
     <View style={{flex:1}}>
       <Image source={require("../Images/InstaLogo.png") } style={styles.Image}/>
@@ -29,7 +63,27 @@ const SignUp = () => {
       placeholder={"Email"}
       value={email}
       icon={require("../Images/mail.png")}
-      onChangeText={(text) =>setNumber(text)}
+      onChangeText={(text) =>setEmail(text)}
+      />
+      <CustomInput
+      placeholder={"Password"}
+      valule={password}
+      icon={require("../Images/padlock.png")}
+      onChangeText={(text)=>setPassword(text)}
+      type={"password"}
+      />
+      <CustomInput
+      placeholder={"Confirm Password"}
+      valule={confirmPassword}
+      icon={require("../Images/padlock.png")}
+      onChangeText={(text)=>setConfirmPassword(text)}
+      type={"password"}
+      />
+      <CustomButton
+      title="Sign Up"
+      bgColor={"dodgerblue"}
+      txtcolor={"white"}
+      onPress={()=>{saveDAata()}}
       />
     </View>
   )

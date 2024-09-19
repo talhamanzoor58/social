@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { Alert, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import CustomInput from '../Common/CustomInput'
 import CustomButton from '../Common/CustomButton'
@@ -17,7 +17,16 @@ const LogIn = () => {
      .where('email', '==', email)
      .get()
      .then(querySnapshot => {
+      console.log(querySnapshot.docs)
       if(querySnapshot.docs.length > 0){
+        if(querySnapshot.docs[0]._data.email === email &&
+          querySnapshot.docs[0]._data.password  === password
+        ){
+          Alert.alert("user longed in successfully")
+          navigation.navigate("Home")
+        }else{
+          Alert.alert("email or passwor incorect")
+        }
         console.log(querySnapshot.docs[0]._data.email+ 
           " " + querySnapshot.docs[0]._data.password)
       }
@@ -28,15 +37,7 @@ const LogIn = () => {
   }).catch(error=>{
     console.log(error)
   });
-  // firestore()
-  // .collection('Users')
-  // .add({
-  //   email: email,
-  //   password: password,
-  // })
-  // .then(() => {
-  //   console.log('User added!');
-  // });
+ 
 
 
 
