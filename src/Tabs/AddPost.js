@@ -1,11 +1,31 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View,TextInput } from 'react-native'
-import React, { useState } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View,TextInput, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker'
 import storage from '@react-native-firebase/storage'
 import firestore from '@react-native-firebase/firestore';
+import messaging from '@react-native-firebase/messaging';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+let token="";
+let name="";
+let email="";
 const AddPost = () => {
   const[imagedata,setImageData]=useState(null)
+  const[captions,setCaptions]=useState(null)
+
+
+  //for token
+  useEffect(()=>{
+    getFCMToken()
+  },[])
+
+  const getFCMToken=async()=>{
+    name=await AsyncStorage.getItem("NAME")
+    email= await AsyncStorage.getItem("EMAIL")
+    console.log(email)
+    // token = await messaging().getToken()
+    // console.log(token)
+  }
 
   //open camera
   const openCamera=async()=>{
@@ -35,23 +55,16 @@ const AddPost = () => {
       .collection('Posts')
       .add({
         image: url,
+        captions:captions,
+        email:email,
+        name:name
 
         })
    .then(() => {
     console.log('Post added!');
     
      })
-   firestore()
-  .collection('Posts')
-  .get()
-  .then(querySnapshot => {
-    console.log('Total Posts: ', querySnapshot.size);
-
-    querySnapshot.forEach(documentSnapshot => {
-      console.log('User ID: ', documentSnapshot.id, documentSnapshot.data());
-    });
-  });
-    }
+  }
 
   return (
     <View style={{flex:1}}>
@@ -64,8 +77,10 @@ const AddPost = () => {
       color: imagedata!==null?"dodgerblue":"#8e8e8e",
       fontWeight:"500"}}
       onPress={()=>{
-        if(imagedata!==null){
+        if(imagedata!==null || captions!==null){
           uploadImage()
+        }else{
+          Alert.alert("Please Select Pics Or Enter Caption")
         }
       }
       }
@@ -79,7 +94,7 @@ const AddPost = () => {
           <Image source={require("../Images/photo.png")}style={{width:60,height:60,borderRadius:10,margin:10}}/>
 
         }
-        <TextInput  placeholder="Type Captions Here" style={styles.textInput} />
+        <TextInput value={captions} onChangeText={(txt)=>setCaptions(txt)}  placeholder="Type Captions Here" style={styles.textInput} />
 
       </View>
 

@@ -1,13 +1,9 @@
 import { StyleSheet, Text, TouchableOpacity, View,PermissionsAndroid, Image } from 'react-native'
-import React, { useState } from 'react'
-import {launchCamera,launchImageLibrary} from "react-native-image-picker"
-import storage from '@react-native-firebase/storage';
-import { openPhotoPicker } from 'react-native-permissions';
+import React, { useState} from 'react'
 import Main from '../Tabs/Main';
-import Search from '../Tabs/search';
-import Add from '../Tabs/add';
-import Chat from '../Tabs/chat';
-import Profile from '../Tabs/profile';
+import Search from '../Tabs/Search';
+import Chat from '../Tabs/Chat';
+import Profile from '../Tabs/Profile';
 import AddPost from '../Tabs/AddPost';
 
 const Home = () => {
