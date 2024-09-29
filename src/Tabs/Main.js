@@ -37,7 +37,7 @@ const Main = () => {
       </View>
       {
         postData.length>0?(
-          <ScrollView>
+         
           <FlatList
           showsVerticalScrollIndicator={false}
           data={postData}
@@ -54,7 +54,7 @@ const Main = () => {
            )
           }}
           />
-          </ScrollView>
+        
 
         ):(
           <View style={{justifyContent:'center',alignItems:"center",flex:1}}>
