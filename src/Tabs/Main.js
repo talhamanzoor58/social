@@ -1,7 +1,8 @@
-import {Image, StyleSheet, Text, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import { TouchEventType } from 'react-native-gesture-handler/lib/typescript/TouchEventType';
 
 const Main = () => {
   const[postData,setPostData]=useState([])
@@ -43,13 +44,23 @@ const Main = () => {
           data={postData}
           renderItem={({item,index})=>{
            return(
-             <View style={styles.contaier}>
+             <View style={[styles.contaier,{ marginBottom: (postData.length - 1) === index ? 80 : 0 }]}>
               <View style={{flexDirection:"row",alignItems:"center",marginTop:10}}>
                 <Image source={require("../Images/userP.png")} style={{height:40,width:40,borderRadius:20,marginLeft:10}}/>
                  <Text style={{marginLeft:10,fontSize:18,fontWeight:"600"}}>{item.name}</Text>
               </View>
                 <Text style={{marginTop:10,marginBottom:10,marginLeft:20,marginRight:20,fontWeight:"600"}}>{item.captions}</Text>
-               <Image source={{uri:item.image}} style={{height:290,width:"98%",alignSelf:"center",borderRadius:15,marginBottom:25}}/>
+               <Image source={{uri:item.image}} style={{height:290,width:"98%",alignSelf:"center",borderRadius:15,marginBottom:15}}/>
+               <View style={{flexDirection:"row",width:"100%",height:50,marginBottom:10,justifyContent:"space-evenly",alignItems:"center"}}>
+                 <TouchableOpacity style={{flexDirection:"row"}}>
+                  <Text style={{marginRight:10}}>{"0"}</Text>
+                  <Image source={require("../Images/heart.png")} style={{height:24,width:24}}/>
+                 </TouchableOpacity>
+                 <TouchableOpacity style={{flexDirection:"row"}}>
+                  <Text style={{marginRight:10}}>{"0"}</Text>
+                  <Image source={require("../Images/comment.png")} style={{height:24,width:24}}/>
+                 </TouchableOpacity>
+               </View>
                </View>
            )
           }}
@@ -71,13 +82,14 @@ export default Main;
 
 const styles = StyleSheet.create({
   contaier:{
-    height:400,
+    // height:400,
     width:"95%",
     alignSelf:"center",
     marginTop:20,
     backgroundColor:"white",
     borderRadius:20,
     elevation:10,
+   
   },
   header:{
     justifyContent:"center",

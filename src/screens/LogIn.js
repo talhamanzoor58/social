@@ -4,6 +4,7 @@ import CustomInput from '../Common/CustomInput'
 import CustomButton from '../Common/CustomButton'
 import { useNavigation } from '@react-navigation/native'
 import firestore from '@react-native-firebase/firestore';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const LogIn = () => {
   const navigation=useNavigation()
@@ -23,7 +24,8 @@ const LogIn = () => {
           querySnapshot.docs[0]._data.password  === password
         ){
           Alert.alert("user longed in successfully")
-          navigation.navigate("Home")
+          goToHome(querySnapshot.docs[0]._data.userId)
+         
         }else{
           Alert.alert("email or passwor incorect")
         }
@@ -42,7 +44,12 @@ const LogIn = () => {
 
 
   }
+const goToHome=async userId=>{
+  await AsyncStorage.setItem("userId",userId)
+  navigation.navigate("Home")
+  
 
+}
   return (
     <View style={{flex:1}}>
       <Text style={styles.Text}>FZone</Text>
