@@ -70,9 +70,10 @@ const AddPost = () => {
       })
       .then(() => {
         console.log('Post added!');
+        getAllToken();
       });
 
-    getAllToken();
+    
   };
 
   const getAllToken = () => {

@@ -23,7 +23,7 @@ const LogIn = () => {
         if(querySnapshot.docs[0]._data.email === email &&
           querySnapshot.docs[0]._data.password  === password
         ){
-          Alert.alert("user longed in successfully")
+          Alert.alert("user longed in successfully");
           goToHome(querySnapshot.docs[0]._data.userId)
          
         }else{
