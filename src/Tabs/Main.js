@@ -4,10 +4,13 @@ import firestore from '@react-native-firebase/firestore';
 import {FlatList, ScrollView} from 'react-native-gesture-handler';
 import {TouchEventType} from 'react-native-gesture-handler/lib/typescript/TouchEventType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNavigation} from '@react-navigation/native';
+import Comments from '../screens/Comments';
 let userId = '';
 const Main = () => {
   const [postData, setPostData] = useState([]);
-  const[onLikeClick,setOnLikeClick]=useState(false)
+  const [onLikeClick, setOnLikeClick] = useState(false);
+  const navigation = useNavigation();
   useEffect(() => {
     getUserId();
     getData();
@@ -50,39 +53,34 @@ const Main = () => {
     return status;
   };
 
-  const onLike=(item)=>{
-    let tempLikes=item.likes
-    if(tempLikes.length>0){
-    tempLikes.map(item1=>{
-      if(item1==userId){
-        const index=tempLikes.indexOf(item1);
-        if(index>-1){
-          tempLikes.splice(index,1)
-
+  const onLike = item => {
+    let tempLikes = item.likes;
+    if (tempLikes.length > 0) {
+      tempLikes.map(item1 => {
+        if (item1 == userId) {
+          const index = tempLikes.indexOf(item1);
+          if (index > -1) {
+            tempLikes.splice(index, 1);
+          }
+        } else {
+          tempLikes.push(userId);
         }
-      }else{
-        tempLikes.push(userId)
-
-      }
-    })
-  }else{
-    tempLikes.push(userId)
-
-  }
+      });
+    } else {
+      tempLikes.push(userId);
+    }
     firestore()
-    .collection('Posts')
-    .doc(item.postId)
-    .update({
-      likes:tempLikes,
-      
-    })
-    .then(() => {
-      console.log('Post updated!');
-     
-    });
+      .collection('Posts')
+      .doc(item.postId)
+      .update({
+        likes: tempLikes,
+      })
+      .then(() => {
+        console.log('Post updated!');
+      });
 
-     setOnLikeClick(!onLikeClick)
-  }
+    setOnLikeClick(!onLikeClick);
+  };
 
   return (
     <View style={{flex: 1}}>
@@ -150,8 +148,10 @@ const Main = () => {
                     justifyContent: 'space-evenly',
                     alignItems: 'center',
                   }}>
-                  <TouchableOpacity style={{flexDirection: 'row'}} onPress={()=>onLike(item)}>
-                    <Text style={{marginRight: 10}}>{'0'}</Text>
+                  <TouchableOpacity
+                    style={{flexDirection: 'row'}}
+                    onPress={() => onLike(item)}>
+                    <Text style={{marginRight: 10}}>{item.likes.length}</Text>
                     {getLikeStatus(item.likes) ? (
                       <Image
                         source={require('../Images/like.png')}
@@ -164,7 +164,14 @@ const Main = () => {
                       />
                     )}
                   </TouchableOpacity>
-                  <TouchableOpacity style={{flexDirection: 'row'}}>
+                  <TouchableOpacity
+                    style={{flexDirection: 'row'}}
+                    onPress={() => {
+                      navigation.navigate('Comment', {
+                        postId: item.postId,
+                        comments:item.comments
+                      });
+                    }}>
                     <Text style={{marginRight: 10}}>{'0'}</Text>
                     <Image
                       source={require('../Images/comment.png')}

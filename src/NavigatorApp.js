@@ -6,6 +6,7 @@ import SplashScreen from './screens/SplashScreen'
 import LogIn from './screens/LogIn'
 import SignUp from './screens/SignUp'
 import Home from './screens/Home'
+import Comments from './screens/Comments'
 
 const Stack=createStackNavigator()
 const NavigatorApp = () => {
@@ -17,6 +18,7 @@ const NavigatorApp = () => {
             <Stack.Screen name='LogIn' component={LogIn} options={{headerShown:false}}/>
             <Stack.Screen name='SignUp' component={SignUp} options={{headerShown:false}} />
             <Stack.Screen name='Home' component={Home} options={{headerShown:false}}/>
+            <Stack.Screen name='Comment' component={Comments} options={{headerShown:false}}/>
         </Stack.Navigator>
     </NavigationContainer>
     
