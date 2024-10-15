@@ -172,7 +172,7 @@ const Main = () => {
                         comments:item.comments
                       });
                     }}>
-                    <Text style={{marginRight: 10}}>{'0'}</Text>
+                    <Text style={{marginRight: 10}}>{item.comments.length}</Text>
                     <Image
                       source={require('../Images/comment.png')}
                       style={{height: 24, width: 24}}

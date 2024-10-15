@@ -25,15 +25,21 @@ const SignUp = () => {
   };
 
   const saveDAata = () => {
-    firestore()
+    let id=uuid.v4()
+      firestore()
       .collection('Users')
-      .add({
+      .doc(id)
+      .set({
         name: name,
         number: number,
         email: email,
         password: password,
         confirmPassword: confirmPassword,
-        userId:uuid.v4()
+        userId:id,
+        followers:[],
+        posts:[],
+        profilePic:'',
+        bio:''
       })
       .then(() => {
         console.log('User added!');
