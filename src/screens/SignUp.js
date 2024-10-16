@@ -37,6 +37,7 @@ const SignUp = () => {
         confirmPassword: confirmPassword,
         userId:id,
         followers:[],
+        following:[],
         posts:[],
         profilePic:'',
         bio:''
