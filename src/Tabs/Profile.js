@@ -1,19 +1,26 @@
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View,FlatList} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import firestore from '@react-native-firebase/firestore';
 import storage from '@react-native-firebase/storage';
+import Follow from './Follow';
+import Following from './Following';
 
+let userId=''
 const Profile = () => {
   const [imageData, setImageData] = useState(null);
   const [imagePicked, setImagePicked] = useState(false);
   const [uploadPicUrl, setUploadPicUrl] = useState('');
+  const[followers,setFollowers]=useState([])
+  const[following,setFollowing]=useState([])
+  const[selected,setSelected]=useState(0)
+
   useEffect(() => {
     getProfile();
   }, []);
   const getProfile = async () => {
-    const userId = await AsyncStorage.getItem('userId');
+     userId = await AsyncStorage.getItem('userId');
     firestore()
       .collection('Users')
       .doc(userId)
@@ -24,6 +31,8 @@ const Profile = () => {
         if (documentSnapshot.exists) {
           console.log('User data: ', documentSnapshot.data());
           setUploadPicUrl(documentSnapshot.data().profilePic);
+          setFollowers(documentSnapshot.data().followers)
+          setFollowing(documentSnapshot.data().following)
         }
       });
   };
@@ -59,7 +68,11 @@ const Profile = () => {
         console.log('Profile added!');
       });
   };
+  const getFollowStatus = (followers) => {
+    return followers.some(follower => follower.userId === userId);
+  };
   return (
+   
     <View style={{flex: 1}}>
       <View style={styles.header}>
         <Text style={styles.txt}>Profile</Text>
@@ -108,6 +121,112 @@ const Profile = () => {
           {imagePicked === true ? 'Save Profile' : 'Edit Profile'}
         </Text>
       </TouchableOpacity>
+      
+      <View style={{
+        flexDirection:"row",
+        justifyContent:"space-evenly",
+        height:60,
+        width:"100%",
+        alignItems:"center",
+        marginTop:30,
+       
+      }}>
+        <TouchableOpacity style={{
+          height:"70%",
+          justifyContent:"center",
+          alignItems:"center",
+          width:"40%",
+          backgroundColor:selected==0?"dodgerblue":null,
+        
+
+        }} onPress={()=>{setSelected(0)}}>
+          <Text style={{fontSize:selected==0?16:14,fontWeight:"800",color:selected==0?"white":"black"}}>Followers</Text>
+
+        </TouchableOpacity>
+        <TouchableOpacity style={{
+          height:"70%",
+          justifyContent:"center",
+          alignItems:"center",
+          width:"40%",
+          backgroundColor:selected==1?"dodgerblue":null,
+
+        }} onPress={()=>{setSelected(1)}}>
+          <Text style={{fontSize:selected==1?16:14,fontWeight:"800",color:selected==1?"white":"black"}}>Followings</Text>
+
+        </TouchableOpacity>
+
+      </View>
+      {selected==0? null:(<FlatList
+        data={following}
+        renderItem={({ item }) => {
+          return (
+            <View style={{ width: '100%',
+              height: 70,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+              backgroundColor: '#fff',
+              marginTop: 5,
+              elevation: 10,}}>
+              <View style={{flexDirection: 'row',
+                alignItems: 'center',}}>
+                <Image
+                  source={
+                    item.profilePic === ''
+                      ? require('../Images/userP.png')
+                      : { uri: item.profilePic }
+                  }
+                  style={{ height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    marginRight: 10,
+                    marginLeft: 20,}}
+                />
+                <Text style={{ fontSize: 16,
+    fontWeight: '600',}}>{item.name}</Text>
+              </View>
+        
+            </View>
+          );
+        }}
+        keyExtractor={(item, index) => index.toString()}
+      />)}
+      {selected==1? null:(<FlatList
+        data={followers}
+        renderItem={({ item }) => {
+          return (
+            <View style={{ width: '100%',
+              height: 70,
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              flexDirection: 'row',
+              backgroundColor: '#fff',
+              marginTop: 5,
+              elevation: 10,}}>
+              <View style={{flexDirection: 'row',
+                alignItems: 'center',}}>
+                <Image
+                  source={
+                    item.profilePic === ''
+                      ? require('../Images/userP.png')
+                      : { uri: item.profilePic }
+                  }
+                  style={{ height: 40,
+                    width: 40,
+                    borderRadius: 20,
+                    marginRight: 10,
+                    marginLeft: 20,}}
+                />
+                <Text style={{ fontSize: 16,
+    fontWeight: '600',}}>{item.name}</Text>
+              </View>
+        
+            </View>
+          );
+        }}
+        keyExtractor={(item, index) => index.toString()}
+      />)}
+      
     </View>
   );
 };
