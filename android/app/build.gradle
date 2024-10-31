@@ -118,3 +118,8 @@ dependencies {
         implementation jscFlavor
     }
 }
+
+
+project.ext.react = [
+  enableHermes: false  // Disable Hermes
+]
